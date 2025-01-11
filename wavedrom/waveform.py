@@ -936,8 +936,11 @@ class WaveDrom(SVGBase):
                 ret = self.element.tspan(e)
             return ret
 
-        mstep = 2 * int(self.lane.hscale)
+        hstep = 2 * int(self.lane.hscale)
+        mstep = 1 * self.lane.mscale
+        print(mstep)
         mmstep = mstep * self.lane.xs
+        mhstep = hstep * self.lane.xs
         marks = int(self.lane.xmax / mstep)
         gy = len(content) * int(self.lane.yo)
 
@@ -953,10 +956,10 @@ class WaveDrom(SVGBase):
 
         self.captext(g, self.lane, "head", -33 if (self.lane.yh0 > 0) else -13)
         self.captext(g, self.lane, "foot", gy + (45 if (self.lane.yf0 > 0) else 25))
-        self.ticktock(g, self.lane, "head", "tick", 0, mmstep, -5, marks + 1)
-        self.ticktock(g, self.lane, "head", "tock", mmstep / 2, mmstep, -5, marks)
-        self.ticktock(g, self.lane, "foot", "tick", 0, mmstep, gy + 15, marks + 1)
-        self.ticktock(g, self.lane, "foot", "tock", mmstep / 2, mmstep, gy + 15, marks)
+        self.ticktock(g, self.lane, "head", "tick", 0, mhstep, -5, marks + 1)
+        self.ticktock(g, self.lane, "head", "tock", mhstep / 2, mhstep, -5, marks)
+        self.ticktock(g, self.lane, "foot", "tick", 0, mhstep, gy + 15, marks + 1)
+        self.ticktock(g, self.lane, "foot", "tock", mhstep / 2, mhstep, gy + 15, marks)
 
         return g
 
@@ -1350,6 +1353,10 @@ class WaveDrom(SVGBase):
                 if hscale > 100:
                     hscale = 100
                 self.lane.hscale = hscale
+
+        if source and source.get("config") and source.get("config").get("mscale"):
+            mscale = source.get("config").get("mscale")
+            self.lane.mscale = mscale
 
         self.lane.xmin_cfg = 0
         self.lane.xmax_cfg = sys.maxsize
